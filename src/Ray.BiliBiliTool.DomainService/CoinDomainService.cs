@@ -6,8 +6,9 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ray.BiliBiliTool.Agent;
-using Ray.BiliBiliTool.Agent.Dtos;
-using Ray.BiliBiliTool.Agent.Interfaces;
+using Ray.BiliBiliTool.Agent.BiliBiliAgent;
+using Ray.BiliBiliTool.Agent.BiliBiliAgent.Dtos;
+using Ray.BiliBiliTool.Agent.BiliBiliAgent.Interfaces;
 using Ray.BiliBiliTool.Config;
 using Ray.BiliBiliTool.Config.Options;
 using Ray.BiliBiliTool.DomainService.Interfaces;
@@ -40,7 +41,7 @@ namespace Ray.BiliBiliTool.DomainService
         /// 获取账户硬币余额
         /// </summary>
         /// <returns></returns>
-        public int GetCoinBalance()
+        public decimal GetCoinBalance()
         {
             var response = _accountApi.GetCoinBalance().Result;
             return response.Data.Money ?? 0;
@@ -76,7 +77,7 @@ namespace Ray.BiliBiliTool.DomainService
 
             ExperienceByDonateCoin re = JsonSerializer.Deserialize<ExperienceByDonateCoin>(dataStr);
 
-            _logger.LogInformation("今日已获得投币经验: " + re.Number);
+            _logger.LogDebug("今日已获得投币经验: " + re.Number);
             return re.Number;
         }
         #endregion

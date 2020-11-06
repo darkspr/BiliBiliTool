@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Ray.BiliBiliTool.Agent.Dtos;
-using Ray.BiliBiliTool.Agent.Interfaces;
+using Ray.BiliBiliTool.Agent.BiliBiliAgent.Dtos;
+using Ray.BiliBiliTool.Agent.BiliBiliAgent.Interfaces;
 using Ray.BiliBiliTool.Config;
 using Ray.BiliBiliTool.Config.Options;
-using Ray.BiliBiliTool.DomainService.Attributes;
 using Ray.BiliBiliTool.DomainService.Interfaces;
 
 namespace Ray.BiliBiliTool.DomainService
@@ -36,8 +35,7 @@ namespace Ray.BiliBiliTool.DomainService
         /// <summary>
         /// 每月1号领取大会员福利（B币券、大会员权益）
         /// </summary>
-        [LogIntercepter("领取每月大会员权益")]
-
+        /// <param name="useInfo"></param>
         public void ReceiveVipPrivilege(UseInfo useInfo)
         {
             if (_dailyTaskOptions.DayOfReceiveVipPrivilege == 0)

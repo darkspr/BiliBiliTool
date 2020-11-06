@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using Ray.BiliBiliTool.Agent.Dtos;
-using Ray.BiliBiliTool.Agent.Interfaces;
-using Ray.BiliBiliTool.DomainService.Attributes;
+using Ray.BiliBiliTool.Agent.BiliBiliAgent.Dtos;
+using Ray.BiliBiliTool.Agent.BiliBiliAgent.Interfaces;
+using Ray.BiliBiliTool.Config;
 using Ray.BiliBiliTool.DomainService.Interfaces;
 
 namespace Ray.BiliBiliTool.DomainService
@@ -27,7 +27,6 @@ namespace Ray.BiliBiliTool.DomainService
         /// 登录
         /// </summary>
         /// <returns></returns>
-        [LogIntercepter("登录")]
         public UseInfo LoginByCookie()
         {
             var apiResponse = _dailyTaskApi.LoginByCookie().Result;
@@ -38,19 +37,17 @@ namespace Ray.BiliBiliTool.DomainService
                 return null;
             }
 
-            _logger.LogInformation("登录成功");
-
             UseInfo useInfo = apiResponse.Data;
 
             //用户名模糊处理
-            _logger.LogInformation("用户名称: {0}", useInfo.GetFuzzyUname());
-            _logger.LogInformation("硬币余额: {0}", useInfo.Money);
+            _logger.LogInformation("登录成功，用户名: {0}", useInfo.GetFuzzyUname());
+            _logger.LogInformation("硬币余额: {0}", useInfo.Money ?? 0);
 
             if (useInfo.Level_info.Current_level < 6)
             {
                 _logger.LogInformation("距离升级到Lv{0}还有: {1}天",
                     useInfo.Level_info.Current_level + 1,
-                    (useInfo.Level_info.Next_exp - useInfo.Level_info.Current_exp) / 65);
+                    (useInfo.Level_info.GetNext_expLong() - useInfo.Level_info.Current_exp) / Constants.EveryDayExp);
             }
             else
             {
@@ -64,7 +61,6 @@ namespace Ray.BiliBiliTool.DomainService
         /// 获取每日任务完成情况
         /// </summary>
         /// <returns></returns>
-        //[LogIntercepter("获取今日任务完成状态")]
         public DailyTaskInfo GetDailyTaskStatus()
         {
             var result = new DailyTaskInfo();
